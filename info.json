@@ -1,0 +1,12 @@
+{
+  "name": "too-many-buildables",
+  "version": "0.11.1",
+  "title": "Too Many Buildables - (TMB)",
+  "author": "Reiji_Kishigami",
+  "factorio_version": "2.1",
+  "dependencies": [
+    "base >= 2.1.22",
+    "? casper-ghost-tracking"
+  ],
+  "description": "A collapsible panel that drops down exactly over your quickbar and shows every buildable in your inventory, sorted into the crafting menu's categories. Made for big mod lists."
+}
