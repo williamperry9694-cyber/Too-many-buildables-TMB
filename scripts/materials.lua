@@ -198,10 +198,9 @@ local function mat_place(player)
     x = off_x
     y = res.height - EQUIP_H * scale - h_px + off_y - border
   elseif mode == "center" then
-    -- fixed top edge: where a full-height (10-row) panel would sit centred
+    -- centred on the screen's middle, where the arrow tab sits: grows up and down evenly
     x = off_x
-    local full_px = (side_body_cap(player) + SIDE_CHROME_H) * scale
-    y = (res.height - full_px) / 2 + off_y
+    y = (res.height - h_px) / 2 + off_y
   else -- free
     local loc = d.mat_loc or {x = 0, y = math.floor(res.height * 0.25)}
     x, y = loc.x or loc[1], loc.y or loc[2]

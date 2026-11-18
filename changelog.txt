@@ -1,4 +1,15 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.11.3
+Date: 2026-11-17
+  Bugfixes:
+    - Category tabs on Top: the bar is exactly as wide as the vanilla quickbar and covers it. The tab strip lines up with the slots and the quality buttons sit right beside them.
+    - Category tabs on Top: when the bar is closed, its tab rests on the vanilla quickbar instead of floating above it.
+---------------------------------------------------------------------------------------------------
+Version: 0.11.2
+Date: 2026-11-17
+  Bugfixes:
+    - Materials panel (Center position): the panel is now centred on its arrow tab instead of hanging from a fixed top edge, so the tab sits at the middle of the panel's side whatever its size.
+---------------------------------------------------------------------------------------------------
 Version: 0.11.1
 Date: 2026-11-17
   Features:

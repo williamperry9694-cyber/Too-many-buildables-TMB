@@ -31,10 +31,13 @@ local function geometry(player)
   -- vanilla quickbar size (what we line up with)
   local van_w, h = inner_w + FIXED_W, SLOT * rows + FIXED_H
   -- our frame: tabs (+ their scrollbar) | grid (+ its scrollbar); grows to the left.
-  -- Tabs on top: a strip above the grid instead, so the frame is narrower and taller.
+  -- Tabs on top: a strip above the grid instead. The frame is exactly as wide as the
+  -- vanilla quickbar (so it covers it and no more); the tab strip lines up with the grid,
+  -- the quality buttons sit right next to them, and what's spare is on the far left.
   local tabs_at = tab_position(player)
   local tab_w = TAB * TAB_COLS + SCROLLBAR
-  local tab_strip_cols = math.max(1, math.floor(inner_w / TAB))
+  local top_gap = 0
+  local tab_strip_cols
   local q_per_col, q_cols, q_w = 0, 0, 0
   if quality_enabled() then
     q_per_col = math.max(1, math.floor(SLOT * rows / QBTN))
@@ -42,10 +45,15 @@ local function geometry(player)
     q_w = q_cols * QBTN + 8
   end
   local w = 4 + q_w + tab_w + 8 + inner_w + SCROLLBAR + 4
+  local van_h = h
   if tabs_at == "top" then
-    w = 4 + q_w + inner_w + SCROLLBAR + 4
+    local narrow = 4 + q_w + inner_w + SCROLLBAR + 4
+    -- +3: the vanilla frame's outer edge reaches a little past van_w (measured in-game)
+    w = math.max(narrow, van_w + 3)
+    top_gap = w - narrow
     h = h + TAB + TAB_STRIP_GAP
   end
+  tab_strip_cols = math.max(1, math.floor(inner_w / TAB))
   local scale, res = player.display_scale, player.display_resolution
   local off_x = player.mod_settings["tmb-offset-x"].value
   local off_y = player.mod_settings["tmb-offset-y"].value
@@ -56,11 +64,14 @@ local function geometry(player)
   local top = res.height - math.floor(h * scale + 0.5) + off_y - remote_border(player)
   return {
     rows = rows, width = width, groups = groups, w = w, h = h, inner_w = inner_w, tab_w = tab_w,
-    tabs_at = tabs_at, tab_strip_cols = tab_strip_cols,
+    tabs_at = tabs_at, tab_strip_cols = tab_strip_cols, top_gap = top_gap,
     q_per_col = q_per_col, q_cols = q_cols,
     left = left, top = top,
     toggle_left = math.floor(center_x - (TOGGLE_W * scale) / 2 + 0.5),
     toggle_top = top - math.floor(TOGGLE_H * scale + 0.5),
+    -- closed: the tab rests on the vanilla quickbar, which is lower than our bar with tabs on top
+    toggle_top_closed = res.height - math.floor(van_h * scale + 0.5) + off_y - remote_border(player)
+      - math.floor(TOGGLE_H * scale + 0.5),
     mat_toggle_left = math.floor(center_x + (TOGGLE_W / 2 + 4) * scale + 0.5)
   }
 end
@@ -100,6 +111,8 @@ local function update_visibility(player)
     screen.tmb_toggle.visible = not d.hidden
     screen.tmb_toggle.sprite = d.open and "tmb-arrow-up" or "tmb-arrow-down"
     screen.tmb_toggle.tooltip = d.open and {"tmb.close"} or {"tmb.open"}
+    local g = geometry(player)
+    screen.tmb_toggle.location = {g.toggle_left, d.open and g.toggle_top or g.toggle_top_closed}
   end
   if screen.tmb_bar then
     screen.tmb_bar.visible = d.open and not d.hidden
@@ -125,6 +138,12 @@ local function build_frame(player)
 
   local row = bar.add{type = "flow", name = "tmb_row", direction = "horizontal"}
   row.style.horizontal_spacing = 8
+  -- tabs on top: everything sits flush against the right (quality | strip over grid);
+  -- the spare width goes on the far left
+  if g.tabs_at == "top" then
+    row.style.horizontal_spacing = 4                -- quality buttons closer to the slots
+    row.style.left_padding = g.top_gap + 4
+  end
 
   -- Quality buttons: no box, stacked top to bottom; extra columns grow to the left
   if g.q_cols > 0 then
@@ -216,7 +235,7 @@ local function reposition(player)
   if not (screen.tmb_bar and screen.tmb_toggle) then return build_frame(player) end
   local g = geometry(player)
   screen.tmb_bar.location = {g.left, g.top}
-  screen.tmb_toggle.location = {g.toggle_left, g.toggle_top}
+  screen.tmb_toggle.location = {g.toggle_left, pdata(player).open and g.toggle_top or g.toggle_top_closed}
 end
 
 

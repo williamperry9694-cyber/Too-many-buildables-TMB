@@ -1,0 +1,1 @@
+Every buildable in your game in a collapsible panel that drops down over the quickbar, sorted like the crafting menu with live counts and quality tabs. Plus a Materials side panel, a Ctrl + click "How many?" crafting popup that works anywhere, and two built-in build trackers: Casper for ghosts and Ritual for upgrades. Works with any mod list.
