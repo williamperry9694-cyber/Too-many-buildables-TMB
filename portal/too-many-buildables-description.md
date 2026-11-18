@@ -2,7 +2,7 @@
 
 **Every building you own, one click away, without giving up your quickbar.**
 
-Big mod packs add hundreds of buildings, and the quickbar was never meant to hold them all. TMB adds a collapsible panel that drops down **exactly over your quickbar**. It's sorted like the crafting menu and shows everything you can build, with live counts. On top of that you get a Materials side panel, a "How many?" crafting popup that works anywhere, and two build trackers: **Casper** for ghosts and **Ritual** for upgrades.
+Big mod packs add hundreds of buildings, and the quickbar was never meant to hold them all. TMB adds a collapsible panel that drops down **exactly over your quickbar**. It's sorted like the crafting menu and shows everything you can build, with live counts. On top of that you get a Materials side panel, a "How many?" crafting popup that works anywhere, and three build tools: **Casper** for ghosts, **Ritual** for upgrades and **Reaper** for finding what's marked for deconstruction.
 
 ![Buildables panel](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/buildables-bar.png?raw=true)
 
@@ -45,7 +45,9 @@ The **category tabs** can sit on the left, on top or on the right of the panel; 
 
 **Ctrl + click** an item, in TMB's panels or in the **vanilla crafting menu**, and a small popup asks how many to craft.
 
-- Drag **Stacks** (whole stacks, 0 to 10) and **Singles** (up to one stack), or just type a number and press Enter.
+- Drag **Stacks** (whole stacks, 0 to 10) and **Singles** (up to one stack), or type a number and press Enter.
+- The box takes sums too: `500-39`, `500+12`, `500*4`, `(500-39)/2`. Up to 10 stacks plus a stack (5,500 for an item that stacks to 500).
+- Opens next to the cursor and, like a tooltip, flips above or to the left when there isn't room, so it's never cut off.
 - Follows your stack sizes, including mods that change them.
 - Shows how many you have **on hand**, and your inventory stays open.
 
@@ -121,9 +123,24 @@ Casper is also available on its own as **Casper: Ghost Tracking**. If both are i
 When crafting for a job comes up short, the Materials panel gets a **Ghost Project** section listing every ingredient the job still needs that you don't have: plates, gears, circuits, pipes, other buildings, modded parts.
 
 - The badge shows **how many you're missing**. The tooltip shows the total for every remaining craft, broken down per building.
+- **Parts of parts:** when a missing part is itself a building with its own recipe (a tier-1 machine needed for tier 2, say), what *it* needs is listed too, marked with a blue **↳**.
+- Items you can't hand-craft get an **orange corner**, and the tooltip names the machine that makes them.
 - The missing slots **blink red** each time a craft fails because of them.
 - If the Materials panel is closed, it opens for a few seconds to show you, then closes again.
 - Items drop off once you have enough, and the section goes away when the job ends.
+
+---
+
+## Reaper: find what's marked for deconstruction
+
+**Reaper** (purple, on the shortcut bar) finds things that are already marked for deconstruction: your buildings, trees, rocks, plants, items on the ground, tiles.
+
+- **Drag** over an area: everything marked inside it that a **radar can see** right now is counted once, by type, on a bar below Casper's and Ritual's. Marked things get red brackets while you drag, with a count by the cursor.
+- **Shift-drag** adds another box.
+- **Hover** a type to point to the nearest one, **click** to keep pointing.
+- **Right-click** a type to **hunt** it: every marked one of that type in radar range on the surface is added. Hunted types move to the front with a crosshair. **Shift + right-click** stops the hunt.
+- Reaper **never marks or cancels anything**, and it counts once: a count only drops as those things are removed (or their mark is cancelled). Want something else? Drag again.
+- **Alt-click** with Reaper in hand clears the bar.
 
 ---
 
@@ -152,8 +169,18 @@ When crafting for a job comes up short, the Materials panel gets a **Ghost Proje
 | **Ctrl + click an item** | How many? (pre-filled) |
 | **Right-click an item** | Change type or quality |
 
+**Reaper bar**
+
+| Click | Action |
+|---|---|
+| **Click the Reaper icon** | Hide or show the list |
+| **Hover / click a type** | Point to the nearest one / keep pointing |
+| **Right-click a type** | Hunt it (radar range, whole surface) |
+| **Shift + right-click a type** | Stop hunting |
+| **Alt-click with Reaper in hand** | Clear the bar |
+
 - Every panel also lists its clicks in a tooltip, so you never have to remember them.
-- Optional hotkeys for the panels, Ritual and auto-track are in Settings → Controls, **unbound by default**. Casper and the Exorcist have shortcut buttons and default keys (Shift + Alt + G / Shift + Alt + E).
+- Optional hotkeys for the panels, Ritual, Reaper and auto-track are in Settings → Controls, **unbound by default**. Casper and the Exorcist have shortcut buttons and default keys (Shift + Alt + G / Shift + Alt + E).
 - Bars taller than 2 rows scroll.
 
 ---

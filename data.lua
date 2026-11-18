@@ -10,6 +10,11 @@ data:extend({
     action = "lua",
     order = "a"
   },
+  -- Ghost Project slot marks: part of a part (top-left) / can't be hand-crafted (top-right)
+  {type = "sprite", name = "tmb-gp-deeper", filename = "__too-many-buildables__/graphics/gp-deeper.png",
+   size = 32, scale = 0.5, flags = {"gui-icon"}},
+  {type = "sprite", name = "tmb-gp-machine", filename = "__too-many-buildables__/graphics/gp-machine.png",
+   size = 32, scale = 0.5, flags = {"gui-icon"}},
   {type = "sprite", name = "tmb-arrow-down", filename = "__too-many-buildables__/graphics/arrow-down.png",
    size = 32, scale = 0.5, flags = {"gui-icon"}},
   -- "How many?" popup: Ctrl + click on an item or recipe (also in the vanilla menus).
@@ -183,3 +188,4 @@ styles.tmb_quality_button = {
 if not mods["casper-ghost-tracking"] then
   require("prototypes.casper")
 end
+require("prototypes.reaper")

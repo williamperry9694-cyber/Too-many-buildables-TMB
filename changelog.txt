@@ -1,4 +1,21 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.11.5
+Date: 2026-11-18
+  Features:
+    - Reaper: a new tool (shortcut bar, hotkey slot unassigned) for finding things already marked for deconstruction. Drag over an area and everything marked there that a radar can see (buildings, trees, rocks, plants, items on the ground, tiles) is counted once, by type, on a bar below Casper's and Ritual's. Shift-drag adds another box. Alt-click with the tool clears the bar.
+    - Reaper never marks or cancels anything and never recounts: a count only drops as the things it counted are removed or their mark is cancelled.
+    - Reaper bar: hover a type to point to the nearest one, click to keep pointing. Right-click a type to hunt it: every marked one of that type in radar range on the surface is added once; hunted types move to the front with a crosshair. Shift + right-click stops the hunt and drops what it added.
+    - "How many?": the amount box takes sums: + - * / and brackets (500-39, 500*4, (500-39)/2). The result is rounded down and capped at the window's most (10 stacks plus a stack, 5,500 for a stack of 500).
+  Bugfixes:
+    - "How many?" no longer opens partly off screen: like a tooltip, it flips above or to the left of the cursor when there isn't room below or to the right.
+---------------------------------------------------------------------------------------------------
+Version: 0.11.4
+Date: 2026-11-17
+  Features:
+    - Ghost Project goes deeper for buildings: when a missing ingredient is itself a building (a prior tier like the washing plant, or any placeable part), what you're short of it is broken into its own ingredients too, down the chain. Plates, gears and the like stay one level. Items needed at several levels show one combined total.
+    - Ghost Project: parts of a part get a blue mark (top-left) and their tooltip says which of the job's buildings they're for.
+    - Ghost Project: items you can't hand-craft get an orange corner, and the tooltip names the machine that makes them.
+---------------------------------------------------------------------------------------------------
 Version: 0.11.3
 Date: 2026-11-17
   Bugfixes:

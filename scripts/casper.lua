@@ -1205,8 +1205,24 @@ end
 ---------------------------------------------------------------------------------------------------
 
 -- For every building the player's jobs still need (Casper and Ritual together; normal quality,
--- hand-craftable), the ingredients for all of its remaining crafts.
--- need[item] = total; uses[item] = {{name, count, amount}} per building.
+-- hand-craftable), the ingredients for all of its remaining crafts. Ingredients that are
+-- buildings themselves (a prior tier, a part that is placeable) go deeper: what you're short of
+-- those is broken into their own ingredients too, down the chain. Plates, gears and the like
+-- stay one level. Shared items add up to one total.
+-- need[item] = total; uses[item] = {{name, count, amount, via}} per building that needs it
+-- (`via` = the job's building a deeper item is ultimately for).
+local GP_MAX_DEPTH = 8
+
+local function have_normal(player, name)
+  return player.get_item_count{name = name, quality = "normal", comparator = "="}
+end
+
+
+local function is_building(name)
+  local p = prototypes.item[name]
+  return p ~= nil and p.place_result ~= nil
+end
+
 local function project_needs(player, queued)
   local wanted = {}  -- [building item] = amount still needed across both trackers
   for _, K in pairs({CASPER_K, RITUAL_K}) do
@@ -1218,22 +1234,41 @@ local function project_needs(player, queued)
     end
   end
   local need, uses = {}, {}
+  local demand, expanded, root = {}, {}, {}
   for name, amount in pairs(wanted) do
-    local short = shortfall(player, {name = name, quality = "normal", amount = amount}, queued)
-    if short > 0 then
-      local recipe = shared.find_recipe(player, name)
-      if recipe then
-        local crafts = math.ceil(short / shared.per_craft(recipe, name))
-        for _, ing in pairs(prototypes.recipe[recipe].ingredients) do
-          if ing.type == "item" then
-            local n = ing.amount * crafts
-            need[ing.name] = (need[ing.name] or 0) + n
-            uses[ing.name] = uses[ing.name] or {}
-            table.insert(uses[ing.name], {name = name, count = short, amount = n})
+    demand[name] = amount
+    root[name] = name
+  end
+  for _ = 1, GP_MAX_DEPTH do
+    local names = {}
+    for name in pairs(demand) do
+      if wanted[name] or is_building(name) then names[#names + 1] = name end
+    end
+    local changed = false
+    for _, name in ipairs(names) do
+      local extra = demand[name] - have_normal(player, name) - (queued[name] or 0) - (expanded[name] or 0)
+      if extra > 0 then
+        local recipe = shared.find_recipe(player, name)
+        if recipe then
+          local per = shared.per_craft(recipe, name)
+          local crafts = math.ceil(extra / per)
+          expanded[name] = (expanded[name] or 0) + crafts * per
+          changed = true
+          for _, ing in pairs(prototypes.recipe[recipe].ingredients) do
+            if ing.type == "item" then
+              local n = ing.amount * crafts
+              need[ing.name] = (need[ing.name] or 0) + n
+              demand[ing.name] = (demand[ing.name] or 0) + n
+              root[ing.name] = root[ing.name] or root[name]
+              uses[ing.name] = uses[ing.name] or {}
+              table.insert(uses[ing.name], {name = name, count = extra, amount = n,
+                via = (not wanted[name]) and root[name] or nil})
+            end
           end
         end
       end
     end
+    if not changed then break end
   end
   return need, uses
 end
@@ -1242,8 +1277,27 @@ local function has_any_job(player_index)
   return (storage.casper.jobs[player_index] or storage.casper.ritual.jobs[player_index]) ~= nil
 end
 
-local function have_normal(player, name)
-  return player.get_item_count{name = name, quality = "normal", comparator = "="}
+-- For an item you can't hand-craft: a machine that makes it (entity name), or nil.
+-- nil too when you can hand-craft it, or when there's no character to ask.
+local machine_cache = {}
+local function machine_for(player, name)
+  if not (player.character and player.character.valid) then return nil end
+  if shared.find_recipe(player, name) then return nil end
+  if machine_cache[name] ~= nil then return machine_cache[name] or nil end
+  local found = false
+  for _, rname in ipairs(U.recipe_index()[name] or {}) do
+    local r = prototypes.recipe[rname]
+    for _, cat in pairs(r and r.categories or {}) do
+      local machines = prototypes.get_entity_filtered{{filter = "crafting-category", crafting_category = cat}}
+      for mname, m in pairs(machines) do
+        if m.items_to_place_this and m.items_to_place_this[1] then found = mname; break end
+      end
+      if found then break end
+    end
+    if found then break end
+  end
+  machine_cache[name] = found
+  return found or nil
 end
 
 -- The Ghost Project list for TMB's Materials panel: flagged items you're still short of, in crafting order.
@@ -1263,7 +1317,11 @@ local function ghost_project(player)
     local have = have_normal(player, name)
     local missing = (need[name] or 0) - have
     if missing > 0 and prototypes.item[name] then
-      list[#list + 1] = {name = name, need = need[name], have = have, missing = missing, uses = uses[name]}
+      local u = uses[name] or {}
+      local deeper = #u > 0
+      for _, use in ipairs(u) do if not use.via then deeper = false end end
+      list[#list + 1] = {name = name, need = need[name], have = have, missing = missing, uses = u,
+        deeper = deeper, machine = machine_for(player, name)}
     else
       flags[name] = nil
     end
@@ -1280,12 +1338,22 @@ local function flag_failure(player, item, need)
   if not recipe then return {} end
   local blink = {}
   local flags = storage.casper.gp[player.index] or {}
-  for _, ing in pairs(prototypes.recipe[recipe].ingredients) do
-    if ing.type == "item" and (need[ing.name] or 0) > have_normal(player, ing.name) then
-      flags[ing.name] = true
-      blink[#blink + 1] = ing.name
+  local seen = {}
+  local function flag(rname, depth)
+    for _, ing in pairs(prototypes.recipe[rname].ingredients) do
+      if ing.type == "item" and not seen[ing.name] and (need[ing.name] or 0) > have_normal(player, ing.name) then
+        seen[ing.name] = true
+        flags[ing.name] = true
+        blink[#blink + 1] = ing.name
+        -- a building you're short of: what it's short of too
+        if depth < GP_MAX_DEPTH and is_building(ing.name) then
+          local sub = shared.find_recipe(player, ing.name)
+          if sub then flag(sub, depth + 1) end
+        end
+      end
     end
   end
+  flag(recipe, 1)
   if next(flags) then storage.casper.gp[player.index] = flags end
   return blink
 end
@@ -1883,8 +1951,33 @@ local function sweep_leftovers()
   return boxes, drawings
 end
 
+-- Rolled back from 0.11.5/0.11.6: drop the Exorcist's deconstruction tracking (and Hunter) data
+-- those builds left in the save, with every drawing and bar it made.
+local function drop_decon_leftovers()
+  local d = storage.casper and storage.casper.decon
+  if d then
+    for _, job in pairs(d.jobs or {}) do
+      for _, r in pairs(job.ghosts or {}) do
+        destroy_all(r.corners)
+        destroy_obj(r.marker)
+        destroy_all(r.pieces)
+      end
+      destroy_all(job.area_objs)
+    end
+    for _, objs in pairs(d.arrows or {}) do destroy_all(objs) end
+    storage.casper.decon = nil
+  end
+  if storage.casper then storage.casper.auto_decon = nil end
+  for _, player in pairs(game.players) do
+    local root = player.gui.top[ROOT]
+    if root and root.tmb_decon_panel then root.tmb_decon_panel.destroy() end
+    if root and #root.children == 0 then root.destroy() end
+  end
+end
+
 events.on_configuration_changed(function(data)
   init_storage()
+  drop_decon_leftovers()
   -- Once per save from 0.9.6 on, and again whenever the standalone Casper is removed.
   local changes = data and data.mod_changes or {}
   local standalone = changes["casper-ghost-tracking"]

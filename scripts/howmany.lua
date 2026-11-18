@@ -23,9 +23,76 @@ end
 
 local function hm_right(frame) return frame.tmb_body_frame.tmb_body.tmb_right end
 
+-- Simple sums in the amount box: + - * / and brackets ("500-39", "(500-39)/2", "2*50+7").
+-- Returns a number, or nil if the text can't be read.
+local function evaluate(text)
+  local s = text:gsub("[%s,]", "")
+  if s == "" then return 0 end
+  if s:find("[^%d%.%+%-%*/%(%)]") then return nil end
+  local pos = 1
+  local expr
+  local function peek() return s:sub(pos, pos) end
+  local function number()
+    local n = s:match("^%d+%.?%d*", pos) or s:match("^%.%d+", pos)
+    if not n then return nil end
+    pos = pos + #n
+    return tonumber(n)
+  end
+  local function factor()
+    local c = peek()
+    if c == "-" then pos = pos + 1; local v = factor(); return v and -v end
+    if c == "+" then pos = pos + 1; return factor() end
+    if c == "(" then
+      pos = pos + 1
+      local v = expr()
+      if not v or peek() ~= ")" then return nil end
+      pos = pos + 1
+      return v
+    end
+    return number()
+  end
+  local function term()
+    local v = factor()
+    while v do
+      local c = peek()
+      if c ~= "*" and c ~= "/" then break end
+      pos = pos + 1
+      local r = factor()
+      if not r then return nil end
+      if c == "*" then v = v * r else
+        if r == 0 then return nil end
+        v = v / r
+      end
+    end
+    return v
+  end
+  expr = function()
+    local v = term()
+    while v do
+      local c = peek()
+      if c ~= "+" and c ~= "-" then break end
+      pos = pos + 1
+      local r = term()
+      if not r then return nil end
+      v = (c == "+") and v + r or v - r
+    end
+    return v
+  end
+  local v = expr()
+  if not v or pos <= #s or v ~= v or v == math.huge or v == -math.huge then return nil end
+  return v
+end
+
+-- The window's most: 10 stacks plus a stack of singles (5,500 for a stack of 500).
+local function howmany_max(frame)
+  return (MAX_STACKS + 1) * frame.tags.stack
+end
+
+-- The amount in the box, rounded down and kept between 0 and the window's most; nil if unreadable.
 local function howmany_total(frame)
-  local t = tonumber(hm_right(frame).tmb_total_row.tmb_total.text) or 0
-  return math.max(0, math.floor(t))
+  local t = evaluate(hm_right(frame).tmb_total_row.tmb_total.text)
+  if not t then return nil end
+  return math.max(0, math.min(math.floor(t), howmany_max(frame)))
 end
 
 local function howmany_sync_from_sliders(frame)
@@ -42,6 +109,12 @@ local function howmany_sync_from_total(frame)
   local right = hm_right(frame)
   local stack = frame.tags.stack
   local t = howmany_total(frame)
+  local field = right.tmb_total_row.tmb_total
+  if not t then
+    field.tooltip = {"", {"tmb.bad-formula"}, "\n", {"tmb.tip-total", short_count(howmany_max(frame))}}
+    return  -- half-typed: leave the sliders where they were
+  end
+  field.tooltip = {"tmb.tip-total", short_count(howmany_max(frame))}
   local st = math.min(MAX_STACKS, math.floor(t / stack))
   local si = math.min(stack, t - st * stack)
   right.tmb_stacks_row.tmb_stacks.slider_value = st
@@ -113,18 +186,25 @@ local function howmany_open(player, name, recipe, location, amount)
   local r3 = right.add{type = "flow", name = "tmb_total_row", direction = "horizontal"}
   r3.style.vertical_align = "center"
   r3.style.horizontal_spacing = 6
-  local tf = r3.add{type = "textfield", name = "tmb_total", text = tostring(start), numeric = true,
-    allow_decimal = false, allow_negative = false, lose_focus_on_confirm = true, tooltip = {"tmb.tip-total"}}
+  local tf = r3.add{type = "textfield", name = "tmb_total", text = tostring(start), numeric = false,
+    lose_focus_on_confirm = true, tooltip = {"tmb.tip-total", short_count((MAX_STACKS + 1) * stack)}}
   tf.style.width = 56
   local craft_btn = r3.add{type = "button", name = "tmb_howmany_craft", style = "green_button", caption = {"tmb.craft"}}
   craft_btn.style.width = 64
 
   -- open at the cursor, kept on screen. Not set as the "opened" window, so the
   -- inventory or crafting menu stays open next to it.
+  -- Like a tooltip: below and right of the cursor, flipped above / left when it would run off the screen.
   local res, scale = player.display_resolution, player.display_scale
-  local w, h = 230 * scale, 130 * scale
-  local x = math.max(0, math.min((location and location.x or res.width / 2) + 12, res.width - w))
-  local y = math.max(0, math.min((location and location.y or res.height / 2) + 12, res.height - h))
+  local w, h, gap = 250 * scale, 170 * scale, 12 * scale
+  local cx = location and location.x or res.width / 2
+  local cy = location and location.y or res.height / 2
+  local x = cx + gap
+  if x + w > res.width then x = cx - gap - w end
+  local y = cy + gap
+  if y + h > res.height then y = cy - gap - h end
+  x = math.max(0, math.min(x, res.width - w))
+  y = math.max(0, math.min(y, res.height - h))
   frame.location = {math.floor(x), math.floor(y)}
   tf.focus()
   tf.select_all()
@@ -134,6 +214,7 @@ local function howmany_confirm(player)
   local frame = player.gui.screen.tmb_howmany
   if not frame then return end
   local n = howmany_total(frame)
+  if not n then return say(player, {"tmb.bad-formula"}) end
   local name, recipe = frame.tags.item, frame.tags.recipe
   howmany_close(player)
   if n < 1 then return end
@@ -146,6 +227,7 @@ return {
   howmany_close = howmany_close,
   hm_right = hm_right,
   howmany_total = howmany_total,
+  evaluate = evaluate,
   howmany_sync_from_sliders = howmany_sync_from_sliders,
   howmany_sync_from_total = howmany_sync_from_total,
   howmany_open = howmany_open,

@@ -449,3 +449,6 @@ else
   shared.howmany_open = howmany_open
   require("scripts.casper")
 end
+
+-- Reaper (finder for things marked for deconstruction): always on.
+require("scripts.reaper")

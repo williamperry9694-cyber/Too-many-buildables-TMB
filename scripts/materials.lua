@@ -329,6 +329,38 @@ local function item_name(name)
   return p and p.localised_name or name
 end
 
+local function machine_line(entry)
+  local m = entry.machine and prototypes.entity[entry.machine]
+  if not m then return "" end
+  return {"", "\n", {"tmb.gp-machine", entry.machine, m.localised_name}}
+end
+
+-- Marks over a Ghost Project slot: part of a part (top-left), can't be hand-crafted (top-right).
+-- Drawn as children of the slot that ignore the mouse, so clicks still reach the slot.
+local function gp_marks(button, entry)
+  if not (entry.deeper or entry.machine) then return end
+  local ok = pcall(function()
+    local f = button.add{type = "flow", direction = "horizontal", ignored_by_interaction = true}
+    f.style.width = 32
+    f.style.height = 32
+    f.style.padding = 0
+    f.style.horizontal_spacing = 0
+    if entry.deeper then
+      local sp = f.add{type = "sprite", sprite = "tmb-gp-deeper", ignored_by_interaction = true}
+      sp.style.size = 12
+      sp.style.stretch_image_to_widget_size = true
+    end
+    local gap = f.add{type = "empty-widget", ignored_by_interaction = true}
+    gap.style.horizontally_stretchable = true
+    if entry.machine then
+      local sp = f.add{type = "sprite", sprite = "tmb-gp-machine", ignored_by_interaction = true}
+      sp.style.size = 12
+      sp.style.stretch_image_to_widget_size = true
+    end
+  end)
+  return ok
+end
+
 local function gp_tooltip(entry)
   local lines = {""}
   local uses = entry.uses or {}
@@ -337,10 +369,14 @@ local function gp_tooltip(entry)
       lines[#lines + 1] = {"", "\n", {"tmb.gp-more", #uses - GP_USES_SHOWN}}
       break
     end
-    lines[#lines + 1] = {"", "\n", {"tmb.gp-use", u.count, item_name(u.name), u.amount}}
+    if u.via then
+      lines[#lines + 1] = {"", "\n", {"tmb.gp-use-via", u.count, item_name(u.name), u.amount, item_name(u.via)}}
+    else
+      lines[#lines + 1] = {"", "\n", {"tmb.gp-use", u.count, item_name(u.name), u.amount}}
+    end
   end
   return {"", "[font=default-bold]", item_name(entry.name), "[/font]\n",
-    {"tmb.gp-need", entry.need, entry.have, entry.missing}, lines, "\n", {"tmb.gp-clears"},
+    {"tmb.gp-need", entry.need, entry.have, entry.missing}, lines, machine_line(entry), "\n", {"tmb.gp-clears"},
     "\n", {"tmb.divider"}, "\n", {"tmb.gp-shortcuts"}}
 end
 
@@ -398,7 +434,7 @@ local function mat_refresh(player, force)
   for _, name in ipairs(custom) do parts[#parts + 1] = name .. (counts[name] and "+" or "-") end
   parts[#parts + 1] = d.collapsed[CUSTOM] and "C" or "c"
   parts[#parts + 1] = "|gp" .. (d.collapsed[GP] and "C" or "c")
-  for _, e in ipairs(gp) do parts[#parts + 1] = e.name end
+  for _, e in ipairs(gp) do parts[#parts + 1] = e.name .. (e.deeper and "^" or "") .. (e.machine and "*" or "") end
   for _, sec in ipairs(sections) do
     parts[#parts + 1] = "|" .. sec.key .. (d.collapsed[sec.key] and "C" or "c")
     for _, row in ipairs(sec.rows) do
@@ -454,9 +490,10 @@ local function mat_refresh(player, force)
     if grid then
       content_h = content_h + math.ceil(#gp / width) * SLOT
       for _, e in ipairs(gp) do
-        grid.add{type = "sprite-button", style = gp_red(d, e.name) and "red_slot_button" or "slot_button",
+        local b = grid.add{type = "sprite-button", style = gp_red(d, e.name) and "red_slot_button" or "slot_button",
           sprite = "item/" .. e.name, number = e.missing, tooltip = gp_tooltip(e),
           tags = {tmb_mat = e.name, tmb_gp = true}, mouse_button_filter = {"left", "right"}}
+        gp_marks(b, e)
       end
     end
   end
