@@ -12,7 +12,7 @@ Big mod packs add hundreds of buildings, and the quickbar was never meant to hol
 
 Click the **▾** tab above your quickbar to open the panel and **▴** to go back. Your quickbar stays as it is underneath.
 
-![Open and close](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/hide-show-tab.mp4?raw=true)
+![Open and close](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/gif/hide-show-tab.gif?raw=true)
 
 - **Fits over the quickbar.** It matches your quickbar's size and position, follows your UI scale and resolution, and keeps its right edge flush with the shortcut bar. It also stays lined up in Remote View.
 - **Every buildable in the game:** buildings, vehicles, tiles, rails, plant seeds and modules. Researched or not, every item keeps its place; anything you don't have is greyed out.
@@ -21,15 +21,15 @@ Click the **▾** tab above your quickbar to open the panel and **▴** to go ba
 
 **Click** an item to pick it up. If you have none, you get its **ghost** instead.
 
-![Pick from a slot](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/pick-from-slot.mp4?raw=true)
+![Pick from a slot](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/gif/pick-from-slot.gif?raw=true)
 
 **Pipette (Q)** works on TMB's slots too: hover a slot and press your pipette key for the item, or its ghost if you have none.
 
-![Pipette](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/pipette.mp4?raw=true)
+![Pipette](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/gif/pipette.gif?raw=true)
 
 **Craft straight from a slot:** Shift + click crafts one, Shift + right-click crafts five, Ctrl + Shift + click crafts as many as you can. Hover any slot to see its shortcuts.
 
-![Craft from a slot](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/craft-from-slot.mp4?raw=true)
+![Craft from a slot](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/gif/craft-from-slot.gif?raw=true)
 
 ### Make it yours
 
@@ -49,7 +49,7 @@ The **category tabs** can sit on the left, on top or on the right of the panel; 
 - Follows your stack sizes, including mods that change them.
 - Shows how many you have **on hand**, and your inventory stays open.
 
-![How many?](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/how-many-menu.mp4?raw=true)
+![How many?](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/gif/how-many-menu.gif?raw=true)
 
 ---
 
@@ -60,7 +60,7 @@ The **category tabs** can sit on the left, on top or on the right of the panel; 
 - The buttons only appear when the game has quality enabled. Modded qualities are supported.
 - Hand-crafting always makes Normal quality, so crafting works on the **Normal** tab.
 
-![Quality buttons](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/quality-buttons.mp4?raw=true)
+![Quality buttons](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/gif/quality-buttons.gif?raw=true)
 
 ---
 
@@ -87,7 +87,23 @@ A side panel for intermediates and crafting materials, collapsible like the tool
 
 **Ritual** is Casper for upgrades: drag it over buildings marked for upgrade and it tracks them in cyan, counted by what each building will become.
 
-The video shows both in action:
+![Casper tracking a build](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/gif/casper-tracking.gif?raw=true)
+
+*Drag Casper over a build: green brackets on every ghost, an area outline, and a bar that counts down.*
+
+![Change ghosts](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/gif/casper-change.gif?raw=true)
+
+*Right-click an item on the bar to change its type or quality, like an upgrade planner.*
+
+![Ghost Project](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/gif/ghost-project.gif?raw=true)
+
+*Ghost Project: what the job still needs, in the Materials panel.*
+
+![Growing the job area](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/gif/casper-area.gif?raw=true)
+
+*Shift-drag to grow the area into any shape.*
+
+The full 5-minute demo:
 
 ![Casper and Ritual demo](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/casper-ritual-demo.mp4?raw=true)
 
@@ -169,6 +185,7 @@ When crafting for a job comes up short, the Materials panel gets a **Ghost Proje
 ## Credits & license
 
 - Inspired by the ideas behind *Placeables* and *Toolbars*. **No code from either mod is used**; TMB is written from scratch.
-- Licensed under **MIT**. Source: [GitHub](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB)
+- Licensed under **MIT**.
+- Source, screenshots and videos: [GitHub](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB)
 
 *This mod was made with AI assistance (Claude by Anthropic).*
