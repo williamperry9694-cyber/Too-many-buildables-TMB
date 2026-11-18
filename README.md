@@ -1,19 +1,197 @@
-# Too Many Buildables (TMB)
+# Too Many Buildables - (TMB)
 
-A Factorio 2.1 mod by Reiji_Kishigami. Every buildable you own sits in a bar over the quickbar, sorted into the crafting menu's categories, with a Materials panel, crafting shortcuts, and built-in ghost tracking (Casper) and upgrade tracking (Ritual).
+**Every building you own, one click away, without giving up your quickbar.**
 
-Get it on the [Factorio mod portal](https://mods.factorio.com/mod/too-many-buildables).
+Big mod packs add hundreds of buildings, and the quickbar was never meant to hold them all. TMB adds a collapsible panel that drops down **exactly over your quickbar**. It's sorted like the crafting menu and shows everything you can build, with live counts. On top of that you get a Materials side panel, a "How many?" crafting popup that works anywhere, and two build trackers: **Casper** for ghosts and **Ritual** for upgrades.
 
-## media/
+![Buildables panel](media/buildables-bar.png)
 
-Videos and screenshots for the mod portal page. The portal can't host video, so the description embeds the files from here:
+---
 
-```
-![Title](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/blob/main/media/<file>.mp4?raw=true)
-```
+## Buildables panel
 
-Keep each file under 15 MB.
+Click the **▾** tab above your quickbar to open the panel and **▴** to go back. Your quickbar stays as it is underneath.
 
-## License
+![Open and close](media/gif/hide-show-tab.gif)
 
-MIT
+- **Fits over the quickbar.** It matches your quickbar's size and position, follows your UI scale and resolution, and keeps its right edge flush with the shortcut bar. It also stays lined up in Remote View.
+- **Every buildable in the game:** buildings, vehicles, tiles, rails, plant seeds and modules. Researched or not, every item keeps its place; anything you don't have is greyed out.
+- **Crafting-menu categories,** one tab per item group, taken from the game itself. **Any mod list works**, including mods TMB has never heard of.
+- **Live counts** that update as you build and pick things up.
+
+**Click** an item to pick it up. If you have none, you get its **ghost** instead.
+
+![Pick from a slot](media/gif/pick-from-slot.gif)
+
+**Pipette (Q)** works on TMB's slots too: hover a slot and press your pipette key for the item, or its ghost if you have none.
+
+![Pipette](media/gif/pipette.gif)
+
+**Craft straight from a slot:** Shift + click crafts one, Shift + right-click crafts five, Ctrl + Shift + click crafts as many as you can. Hover any slot to see its shortcuts.
+
+![Craft from a slot](media/gif/craft-from-slot.gif)
+
+### Make it yours
+
+The **category tabs** can sit on the left, on top or on the right of the panel; the **slot layout** can be Rows, Compact, Columns or Dense; and items can be sorted in **crafting order** or **by type**. Open *Settings → Mod settings → Per player* to try them out.
+
+![Tabs on top](media/tabs-top.png)
+
+![Tabs on the right](media/tabs-right.png)
+
+---
+
+## "How many?"
+
+**Ctrl + click** an item, in TMB's panels or in the **vanilla crafting menu**, and a small popup asks how many to craft.
+
+- Drag **Stacks** (whole stacks, 0 to 10) and **Singles** (up to one stack), or just type a number and press Enter.
+- Follows your stack sizes, including mods that change them.
+- Shows how many you have **on hand**, and your inventory stays open.
+
+![How many?](media/gif/how-many-menu.gif)
+
+---
+
+## Quality
+
+- **Quality buttons** sit on the left of the panel. Pick a quality and the panel shows counts, badges and greyed slots for **that quality only**.
+- Clicking picks up that quality; right-click ghosts it.
+- The buttons only appear when the game has quality enabled. Modded qualities are supported.
+- Hand-crafting always makes Normal quality, so crafting works on the **Normal** tab.
+
+![Quality buttons](media/gif/quality-buttons.gif)
+
+---
+
+## Materials panel
+
+A side panel for intermediates and crafting materials, collapsible like the toolbelt.
+
+- **Custom bar:** pin any item you like (pipes, ammo, anything).
+- **Track menu:** pick exactly which materials to show, item by item or a whole subgroup at once.
+- Grouped by crafting-menu tab, with collapsible sections and its own quality buttons. Sorted by type or in crafting order (your choice).
+- At most 10 rows tall, 6 to 9 slots wide (your choice); longer lists scroll.
+
+![Materials panel and Track menu](media/materials-and-track.png)
+
+**Four positions:** centred on the left edge, above the equipment panel, under **GUI Unifier** (offered only when it's installed), or anywhere you drag it.
+
+![Materials positions](media/materials-positions.png)
+
+---
+
+## Casper and Ritual: build tracking (built in)
+
+**Casper** tracks ghosts. Drag its tool over a build and every unbuilt ghost gets green brackets and a map mark, the area gets a green outline, and a bar at the top of the screen counts what's left. Ghosts tick off as they get built, and the bar disappears when the job is done.
+
+**Ritual** is Casper for upgrades: drag it over buildings marked for upgrade and it tracks them in cyan, counted by what each building will become.
+
+![Casper tracking a build](media/gif/casper-tracking.gif)
+
+*Drag Casper over a build: green brackets on every ghost, an area outline, and a bar that counts down.*
+
+![Change ghosts](media/gif/casper-change.gif)
+
+*Right-click an item on the bar to change its type or quality, like an upgrade planner.*
+
+![Ghost Project](media/gif/ghost-project.gif)
+
+*Ghost Project: what the job still needs, in the Materials panel.*
+
+![Growing the job area](media/gif/casper-area.gif)
+
+*Shift-drag to grow the area into any shape.*
+
+**[▶ Watch the full 5-minute Casper and Ritual demo (mp4)](https://github.com/williamperry9694-cyber/Too-many-buildables-TMB/raw/main/media/casper-ritual-demo.mp4)**
+
+- **Job area:** Shift-drag to grow the area into any shape, still one outline. New ghosts and upgrade orders placed inside it later are picked up too, whoever on your team places them.
+- **Auto-track:** turn on the **Casper auto-track** shortcut and every blueprint you paste is tracked automatically: its ghosts in Casper, its upgrades in Ritual.
+- **Guide arrow:** hover an item on the bar to point to the nearest one; click to keep pointing.
+- **Craft from the bar:** click the ghost icon to **craft everything you're missing**, Shift + click an item to craft what you're missing of it, Ctrl + click for "How many?" with the shortfall already filled in.
+- **Change type or quality:** right-click an item to swap all its ghosts at once, like an upgrade planner: pick a new type and quality, then Confirm. Ctrl + Z undoes it. Changed ghosts **move to Ritual** until they're built; undo moves them back.
+- **Exorcist:** a companion tool to remove ghost types from the job.
+
+Casper is also available on its own as **Casper: Ghost Tracking**. If both are installed, the standalone mod takes over and TMB's copy switches itself off.
+
+### Ghost Project
+
+When crafting for a job comes up short, the Materials panel gets a **Ghost Project** section listing every ingredient the job still needs that you don't have: plates, gears, circuits, pipes, other buildings, modded parts.
+
+- The badge shows **how many you're missing**. The tooltip shows the total for every remaining craft, broken down per building.
+- The missing slots **blink red** each time a craft fails because of them.
+- If the Materials panel is closed, it opens for a few seconds to show you, then closes again.
+- Items drop off once you have enough, and the section goes away when the job ends.
+
+---
+
+## Controls
+
+**Buildables and Materials panels**
+
+| Click | Action |
+|---|---|
+| **Click** | Pick up (ghost if you have none) |
+| **Right-click** | Ghost in hand |
+| **Q (pipette)** | Pick up, or ghost if you have none |
+| **Shift + click** | Craft 1 |
+| **Shift + right-click** | Craft 5 |
+| **Ctrl + Shift + click** | Craft as many as possible |
+| **Ctrl + click** | How many? |
+
+**Casper and Ritual bars**
+
+| Click | Action |
+|---|---|
+| **Click the tool icon** | Craft everything you're missing |
+| **Right-click the tool icon** | Hide or show the list |
+| **Hover / click an item** | Point to the nearest one / keep pointing |
+| **Shift + click an item** | Craft what you're missing |
+| **Ctrl + click an item** | How many? (pre-filled) |
+| **Right-click an item** | Change type or quality |
+
+- Every panel also lists its clicks in a tooltip, so you never have to remember them.
+- Optional hotkeys for the panels, Ritual and auto-track are in Settings → Controls, **unbound by default**. Casper and the Exorcist have shortcut buttons and default keys (Shift + Alt + G / Shift + Alt + E).
+- Bars taller than 2 rows scroll.
+
+---
+
+## Settings (per player)
+
+| Setting | What it does |
+|---|---|
+| **Quickbar rows** | Match this to *Interface → Active quickbars* (the game doesn't let mods read it) |
+| **Quickbar width** | **Auto** reads it from the game, or set it yourself |
+| **Category tab position** | Left, Top or Right |
+| **Slot layout** | Rows, Compact, Columns or Dense |
+| **Buildables sort order** | Crafting order or By type |
+| **Fine-tune offsets** | Nudge the panel a few pixels if your HUD is set up differently |
+| **Materials panel width** | 6 to 9 slots per row |
+| **Materials panel position** | Left edge, above equipment, under GUI Unifier, or free |
+| **Materials sort order** | By type or Crafting order |
+
+---
+
+## Compatibility
+
+- Factorio **2.1** (2.1.22 or newer). **Space Age is optional.**
+- Built for big mod packs such as Bob's and Angel's: categories, sorting and icons all come from the game, with no per-mod lists.
+- Multiplayer-safe: every setting, panel and tracker is per player.
+
+---
+
+## Credits & license
+
+- Inspired by the ideas behind *Placeables* and *Toolbars*. **No code from either mod is used**; TMB is written from scratch.
+- Licensed under **MIT**.
+- Download from the [Factorio mod portal](https://mods.factorio.com/mod/too-many-buildables) or in-game through the mod manager.
+
+*This mod was made with AI assistance (Claude by Anthropic).*
+
+---
+
+## In this repository
+
+- The mod's source, as it ships (`info.json`, `control.lua`, `scripts/`, `prototypes/`, `graphics/`, `locale/`).
+- `media/`: the screenshots and videos used here and on the mod portal page.
+- `portal/`: the mod portal page's description, summary and gallery images.
