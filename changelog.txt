@@ -1,6 +1,8 @@
 ---------------------------------------------------------------------------------------------------
-Version: 0.11.5
+Version: 0.11.7
 Date: 2026-11-18
+  Changes:
+    - Removed the Exorcist's deconstruction tracking and Hunter (0.11.5 and 0.11.6): they did too much for what they're for. Reaper, below, replaces them. Saves clean up after them on load.
   Features:
     - Reaper: a new tool (shortcut bar, hotkey slot unassigned) for finding things already marked for deconstruction. Drag over an area and everything marked there that a radar can see (buildings, trees, rocks, plants, items on the ground, tiles) is counted once, by type, on a bar below Casper's and Ritual's. Shift-drag adds another box. Alt-click with the tool clears the bar.
     - Reaper never marks or cancels anything and never recounts: a count only drops as the things it counted are removed or their mark is cancelled.
@@ -8,6 +10,22 @@ Date: 2026-11-18
     - "How many?": the amount box takes sums: + - * / and brackets (500-39, 500*4, (500-39)/2). The result is rounded down and capped at the window's most (10 stacks plus a stack, 5,500 for a stack of 500).
   Bugfixes:
     - "How many?" no longer opens partly off screen: like a tooltip, it flips above or to the left of the cursor when there isn't room below or to the right.
+---------------------------------------------------------------------------------------------------
+Version: 0.11.6
+Date: 2026-11-18
+  Features:
+    - Exorcist Hunter: right-click a slot on the red bar to hunt that type, counting every one marked for deconstruction on the planet, no area needed. Hunted slots sit at the end of the bar with a crosshair badge; the finder, tooltip distance and Shift + click cancel all work planet-wide. Shift + right-click stops the hunt.
+    - Vanilla trees, rocks, fish and cliffs can't be hunted (there are too many); modded and Space Age ones can, and so can buildings.
+    - Hunts stay on until you stop them and follow you to other planets; the bar stays while you're hunting, even with no area.
+---------------------------------------------------------------------------------------------------
+Version: 0.11.5
+Date: 2026-11-18
+  Features:
+    - Exorcist tracks deconstruction: right-drag with the Exorcist to track everything marked for deconstruction in the area (buildings, trees, plants, rocks and anything else that can be marked). Shift + right-drag grows the area into any shape.
+    - A red bar counts what's left by type. Hover a slot to point to the nearest one, click to keep pointing; the tooltip shows how far the nearest one is.
+    - Shift + click a slot to cancel deconstruction for that type, as one undo step (Ctrl + Z marks them again).
+    - New marks inside the area are picked up, cancelled ones drop off, and the bar goes away when everything is cleared.
+    - Auto-track also feeds the red bar when you use a deconstruction planner.
 ---------------------------------------------------------------------------------------------------
 Version: 0.11.4
 Date: 2026-11-17
